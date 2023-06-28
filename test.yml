@@ -1,0 +1,42 @@
+config:
+  target: "https://stage.issuer.app.purefi.io"
+  phases:
+      - duration: 600
+        arrivalRate: 20
+        rampTo: 100
+scenarios:
+  - name: "Sign In"
+    flow:
+      - post:
+          url: "/auth/signin"
+          headers:
+            Accept: "application/json, text/plain, */*"
+            Accept-Language: "en-US,en;q=0.9,tr;q=0.8,uk;q=0.7,ru;q=0.6"
+            Authorization: "Bearer null"
+            Connection: "keep-alive"
+            Content-Type: "application/json"
+            Cookie: "_vid_t=0pnsz6mDmbSxO+eqA6YnFddRCDnFECiyBz0mFIlGd+MEjoxNhp9nRgwoKy5u7z0kFWA1+NLH+x3JyTxb/WjR5jW7LA==; ajs_user_id=f3a53894-4c8e-55c7-92be-902c0770498d; ajs_anonymous_id=97c26817-f20c-47cf-8523-432fc5c060e0"
+            Origin: "https://stage.dashboard.purefi.io"
+            Referer: "https://stage.dashboard.purefi.io/"
+            Sec-Fetch-Dest: "empty"
+            Sec-Fetch-Mode: "cors"
+            Sec-Fetch-Site: "same-site"
+            User-Agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.58"
+            sec-ch-ua: "\"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Microsoft Edge\";v=\"114\""
+            sec-ch-ua-mobile: "?0"
+            sec-ch-ua-platform: "\"macOS\""
+          json:
+            message: "Welcome to PureFI Dashboard!\nNonce: 1687957247"
+            signature: "0xcdf605f60cb40c581f980bfe50a791708a012554e9fcf98ca15347df7749f1f4607bb361915d080e330c3cbabf7eac99cedd0f8d8d9901587fa15aa3516dc6f91b"
+          capture:
+            - json: "$.accessToken"
+              as: "accessToken"
+      - log: "Access Token: {{ accessToken }}"
+      - think: 2
+      - expect:
+          - statusCode: 201  
+          - json:
+              body:
+                accessToken:  
+                  - exists
+                  - notEqual: null
